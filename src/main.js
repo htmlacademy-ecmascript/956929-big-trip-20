@@ -17,7 +17,3 @@ render(new FilterView(), tripHeaderFilterElement);
 
 tripListPresenter.init();
 /*tripPointEditPresenter.init();*/
-
-
-
-
