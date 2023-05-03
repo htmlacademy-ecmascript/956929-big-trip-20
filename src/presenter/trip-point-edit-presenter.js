@@ -6,21 +6,21 @@ import PointEditView from '../view/point-edit-view.js';
 import {render} from '../render.js';
 
 export default class TripPointEditPresenter {
-  tripListComponent = new TripListView();
-  sortComponent = new SortView();
-  pointEditComponent = new PointEditView();
+  #tripListComponent = new TripListView();
+  #sortComponent = new SortView();
+  #pointEditComponent = new PointEditView();
 
   constructor({tripPointEditContainer}) {
-    this.tripPointEditContainer = tripPointEditContainer;
+    this.container = tripPointEditContainer;
   }
 
   init() {
-    render(this.sortComponent, this.tripPointEditContainer)
-    render(this.tripListComponent, this.tripPointEditContainer);
-    render(this.pointEditComponent, this.tripListComponent.getElement());
+    render(this.#sortComponent, this.container);
+    render(this.#tripListComponent, this.container);
+    render(this.#pointEditComponent, this.#tripListComponent.getElement());
 
     for (let i = 0; i < 3; i++) {
-      render(new PointView(), this.tripListComponent.getElement());
+      render(new PointView(), this.#tripListComponent.getElement());
     }
 
   }

@@ -12,12 +12,11 @@ const tripListPresenter = new TripListPresenter({tripListContainer: tripEventsEl
 
 const tripPointEditPresenter = new TripPointEditPresenter({tripPointEditContainer: tripEventsElement});
 
-
 render(new TripInfoView(), tripHeaderElement, RenderPosition.AFTERBEGIN);
 render(new FilterView(), tripHeaderFilterElement);
 
-/*tripListPresenter.init();*/
-tripPointEditPresenter.init();
+tripListPresenter.init();
+/*tripPointEditPresenter.init();*/
 
 
 

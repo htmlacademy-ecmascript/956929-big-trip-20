@@ -5,19 +5,19 @@ import PointView from '../view/point-view.js';
 import {render} from '../render.js';
 
 export default class TripListPresenter {
-  TripListComponent = new TripListView();
-  sortComponent = new SortView();
+  #tripListComponent = new TripListView();
+  #sortComponent = new SortView();
 
   constructor({tripListContainer}) {
-    this.tripListContainer = tripListContainer;
+    this.container = tripListContainer;
   }
 
   init() {
-    render(this.sortComponent, this.tripListContainer)
-    render(this.TripListComponent, this.tripListContainer);
+    render(this.#sortComponent, this.container);
+    render(this.#tripListComponent, this.container);
 
     for (let i = 0; i < 3; i++) {
-      render(new PointView(), this.TripListComponent.getElement());
+      render(new PointView(), this.#tripListComponent.getElement());
     }
 
   }
