@@ -8,21 +8,25 @@ import {render} from '../render.js';
 export default class TripPointEditPresenter {
   #tripListComponent = new TripListView();
   #sortComponent = new SortView();
-  #pointEditComponent = new PointEditView();
 
-  constructor({tripPointEditContainer}) {
+  constructor({tripPointEditContainer, tripsModel}) {
     this.container = tripPointEditContainer;
+    this.tripsModel = tripsModel;
   }
 
   init() {
+    this.trips = [...this.tripsModel.getTrips()];
+    this.offers = [...this.tripsModel.getOffers()];
+    this.destinations = [...this.tripsModel.getDestinations()];
+    this.destinationsList = [...this.tripsModel.getDestinationsList()];
+
     render(this.#sortComponent, this.container);
     render(this.#tripListComponent, this.container);
-    render(this.#pointEditComponent, this.#tripListComponent.getElement());
+    render(new PointEditView({trip: this.trips[0], offers: this.offers, destinationsList: this.destinationsList, destinations: this.destinations}), this.#tripListComponent.getElement());
 
-    for (let i = 0; i < 3; i++) {
-      render(new PointView(), this.#tripListComponent.getElement());
+    for (let i = 1; i < this.trips.length; i++) {
+      render(new PointView({trip: this.trips[i], offers: this.offers, destinations: this.destinations}), this.#tripListComponent.getElement());
     }
-
   }
 
 }
