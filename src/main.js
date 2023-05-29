@@ -1,6 +1,6 @@
 import TripInfoView from './view/trip-info-view.js';
 import FilterView from './view/filter-view.js';
-import TripPointEditPresenter from './presenter/trip-point-edit-presenter.js';
+import TripPresenter from './presenter/trip-presenter.js';
 import {render, RenderPosition} from './render.js';
 import TripsModel from './model/model.js';
 
@@ -11,10 +11,10 @@ const tripEventsElement = document.querySelector('.trip-events');
 
 const tripsModel = new TripsModel();
 
-const tripPointEditPresenter = new TripPointEditPresenter({tripPointEditContainer: tripEventsElement, tripsModel});
+const tripPresenter = new TripPresenter({tripPointEditContainer: tripEventsElement, tripsModel});
 
 render(new TripInfoView(), tripHeaderElement, RenderPosition.AFTERBEGIN);
 render(new FilterView(), tripHeaderFilterElement);
 
 
-tripPointEditPresenter.init();
+tripPresenter.init();

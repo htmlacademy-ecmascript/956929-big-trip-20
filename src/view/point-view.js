@@ -16,7 +16,8 @@ function createPointTemplate(trip, pointOffers, pointDestinations) {
   const {type, destination, dateFrom, dateTo, basePrice, isFavorite} = trip;
   const tripDestination = pointDestinations.filter((value) => value.id === destination);
   const tripCity = tripDestination[0].name;
-  const pointOffer = pointOffers.filter((value) => value.type === type)[0].offers;
+  const pointOffer = pointOffers[Object.keys(pointOffers).filter((value) => value === type)[0]];
+
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'

@@ -53,9 +53,9 @@ function createOffersTemplate(pointOffers, trip) {
 }
 
 function createOffersItemTemplate(pointOffers, trip) {
-  const currentOffers = pointOffers.filter((value) => value.type === trip.type);
+  const currentOffers = pointOffers[Object.keys(pointOffers).filter((value) => value === trip.type)];
   return (`
-    ${currentOffers[0].offers.map(({title, price, id}) => `
+    ${currentOffers.map(({title, price, id}) => `
       <div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}-1" type="checkbox" name="event-offer-${id}" checked="">
         <label class="event__offer-label" for="event-offer-${id}-1">
