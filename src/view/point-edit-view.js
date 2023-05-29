@@ -1,6 +1,92 @@
 import {createElement} from '../render.js';
 
+<<<<<<< HEAD
 function createPointEditViewTemplate() {
+=======
+function createEventTypeItemsTemplate(types) {
+  return (`
+    ${Object.values(types).map((type) =>
+      `<div class="event__type-item">
+        <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+        <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${upFirstLetter(type)}</label>
+      </div>`).join('')}
+  `);
+}
+
+function createDestinationsListOptionsTemplate(destinationsList) {
+  return (`${destinationsList.map((value) => `<option value="${value}"></option>`).join('')}`);
+}
+
+function createEventDetailsTemplate(pointOffers, trip, pointDestinations) {
+
+  const {destination} = trip;
+  const tripDestination = pointDestinations.filter((value) => value.id === destination);
+  const description = tripDestination[0].description;
+
+  return (`
+    <section class="event__details">
+     
+
+      <section class="event__section  event__section--destination">
+        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+        <p class="event__destination-description">${description}</p>
+
+        ${createOffersTemplate(pointOffers, trip)}
+        ${createPhotoContainerTemplate(trip, pointDestinations)}
+        
+      </section>
+    </section>
+  `);
+}
+
+function createOffersTemplate(pointOffers, trip) {
+  return (`
+    <section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+      <div class="event__available-offers">
+        
+      ${createOffersItemTemplate(pointOffers, trip)}
+      
+      </div>
+    </section>
+  `);
+}
+
+function createOffersItemTemplate(pointOffers, trip) {
+  const currentOffers = pointOffers[Object.keys(pointOffers).filter((value) => value === trip.type)];
+  return (`
+    ${currentOffers.map(({title, price, id}) => `
+      <div class="event__offer-selector">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}-1" type="checkbox" name="event-offer-${id}" checked="">
+        <label class="event__offer-label" for="event-offer-${id}-1">
+          <span class="event__offer-title">${title}</span>
+          +€&nbsp;
+          <span class="event__offer-price">${price}</span>
+        </label>
+      </div>`).join('')}
+    `);
+}
+
+function createPhotoContainerTemplate(trip, pointDestinations) {
+  const {destination} = trip;
+  const tripDestination = pointDestinations.filter((value) => value.id === destination);
+  const pictures = tripDestination[0].pictures;
+  return (`
+    <div class="event__photos-container">
+      <div class="event__photos-tape">
+      ${pictures.map(({src, description}) => `<img class="event__photo" src="${src}"
+      alt="${description}"></img>`).join('')}</div>
+      </div>
+    </div>
+  `);
+}
+
+function createPointEditViewTemplate(trip, pointOffers, destinationsList, pointDestinations) {
+  const {type, destination, dateFrom, dateTo, basePrice} = trip;
+  const tripDestination = pointDestinations.filter((value) => value.id === destination);
+  const tripCity = tripDestination[0].name;
+>>>>>>> aa7aec6 (2.13. Шаблонизируй это - 1.1)
   return (`
     <li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">

@@ -1,4 +1,30 @@
 import {createElement} from '../render.js';
+<<<<<<< HEAD
+=======
+import {humanizeTripDueDate, getPointDuration} from '../utils.js';
+import {DATE_FORMAT} from '../const.js';
+
+function createOffersTemplate(tripOffer) {
+  return (`<ul class="event__selected-offers">
+  ${tripOffer.map(({title, price}) => `<li class="event__offer">
+      <span class="event__offer-title">${title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${price}</span>
+    </li>`).join('')}
+  </ul>`);
+}
+
+function createPointTemplate(trip, pointOffers, pointDestinations) {
+  const {type, destination, dateFrom, dateTo, basePrice, isFavorite} = trip;
+  const tripDestination = pointDestinations.filter((value) => value.id === destination);
+  const tripCity = tripDestination[0].name;
+  const pointOffer = pointOffers[Object.keys(pointOffers).filter((value) => value === type)[0]];
+
+
+  const favoriteClassName = isFavorite
+    ? 'event__favorite-btn event__favorite-btn--active'
+    : 'event__favorite-btn';
+>>>>>>> aa7aec6 (2.13. Шаблонизируй это - 1.1)
 
 function createPointTemplate() {
   return (`
