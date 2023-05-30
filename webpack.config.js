@@ -9,6 +9,9 @@ module.exports = {
     path: path.resolve(__dirname, 'build'),
     clean: true,
   },
+  devServer: {
+    allowedHosts: 'all'
+  },
   devtool: 'source-map',
   plugins: [
     new HtmlPlugin({
