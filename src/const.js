@@ -16,7 +16,7 @@ const PRICE = {
   MAX: 95
 };
 
-const POINT_COUNT = 3;
+const POINT_COUNT = 10;
 
 const DATE_FORMAT = {
   HOUR_MINUTES: 'H:mm',

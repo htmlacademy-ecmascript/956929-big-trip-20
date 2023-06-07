@@ -9,19 +9,19 @@ export default class TripsModel {
   #destinations = getMockDestinations();
   #destinationsLists = this.#destinations.map(({name}) => name);
 
-  getTrips() {
+  get trips() {
     return this.#points;
   }
 
-  getOffers() {
+  get offers() {
     return this.#offers;
   }
 
-  getDestinations() {
+  get destinations() {
     return this.#destinations;
   }
 
-  getDestinationsList() {
+  get destinationsList() {
     return this.#destinationsLists;
   }
 }
