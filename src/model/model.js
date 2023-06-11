@@ -22,6 +22,6 @@ export default class TripsModel {
   }
 
   get destinationsList() {
-    return this.#destinationsLists;
+    return this.#destinations.map(({name}) => name);
   }
 }

@@ -27,10 +27,9 @@ function createEventDetailsTemplate(pointOffers, trip, pointDestinations) {
      
 
       <section class="event__section  event__section--destination">
+        ${createOffersTemplate(pointOffers, trip)}
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${description}</p>
-
-        ${createOffersTemplate(pointOffers, trip)}
         ${createPhotoContainerTemplate(trip, pointDestinations)}
         
       </section>

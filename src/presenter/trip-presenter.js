@@ -51,17 +51,23 @@ export default class TripPresenter {
       onEditClick: () => {
         replaceTripToForm();
         document.addEventListener('keydown', escKeyDownHandler);
-      }});
+      }
+    });
 
     const eventFormComponent = new PointEditView({
       trip,
       offers,
       destinationsList,
       destinations,
+      onEditClick: () => {
+        replaceFormToTrip();
+        document.addEventListener('keydown', escKeyDownHandler);
+      },
       onRollUpButtonClick: () => {
         replaceFormToTrip();
         document.removeEventListener('keydown', escKeyDownHandler);
-      }});
+      }
+    });
 
     render(pointComponent, this.#tripListComponent.element);
 
