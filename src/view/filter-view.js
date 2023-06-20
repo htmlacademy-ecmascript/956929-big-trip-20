@@ -2,7 +2,6 @@ import AbstractView from '../framework/view/abstract-view.js';
 import {upFirstLetter} from '../utils/trip.js';
 
 function createFilterTemplate(filtersItems) {
-
   const filterItemsTemplate = filtersItems.map((filter, index) => createFilterItemTemplate(filter, index === 0)).join('');
 
   return (`
