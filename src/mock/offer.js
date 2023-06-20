@@ -1,4 +1,4 @@
-import {getRandomInteger} from '../utils.js';
+import {getRandomInteger} from '../utils/trip.js';
 import {TYPES, PRICE} from '../const.js';
 
 const mockOffer = {

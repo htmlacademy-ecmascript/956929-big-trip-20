@@ -1,4 +1,4 @@
-import {getRandomArrayElement, getRandomInteger} from '../utils.js';
+import {getRandomArrayElement, getRandomInteger} from '../utils/trip.js';
 import {TYPES, PRICE} from '../const.js';
 
 const mockPoint = [
@@ -16,8 +16,8 @@ const mockPoint = [
     id: 1,
     type: TYPES.BUS,
     destination: getRandomInteger(0, 5),
-    dateFrom: new Date(Date.parse('2021-06-16T13:12:44.845Z')),
-    dateTo: new Date(Date.parse('2021-06-16T16:34:38.375Z')),
+    dateFrom: new Date(Date.parse('2023-06-20T13:12:44.845Z')),
+    dateTo: new Date(Date.parse('2023-06-21T16:34:38.375Z')),
     basePrice: getRandomInteger(PRICE.MIN, PRICE.MAX),
     offers: [104],
     isFavorite: false
