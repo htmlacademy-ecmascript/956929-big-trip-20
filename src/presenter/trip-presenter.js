@@ -2,6 +2,7 @@ import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
 import PointView from '../view/point-view.js';
 import PointEditView from '../view/point-edit-view.js';
+import NoTripView from '../view/no-trip-view.js';
 
 import {render, replace} from '../framework/render.js';
 
@@ -26,15 +27,21 @@ export default class TripPresenter {
     this.#destinations = [...this.#tripsModel.destinations];
     this.#destinationsList = [...this.#tripsModel.destinationsList];
 
-    render(this.#sortComponent, this.#container);
-    render(this.#tripListComponent, this.#container);
 
     for (let i = 0; i < this.#trips.length; i++) {
       this.#renderTrips(this.#trips[i], this.#offers, this.#destinations, this.#destinationsList);
     }
+
+    if (this.#trips.length === 0) {
+      render(new NoTripView(), this.#container);
+    }
   }
 
+
   #renderTrips(trip, offers, destinations, destinationsList) {
+
+    render(this.#sortComponent, this.#container);
+    render(this.#tripListComponent, this.#container);
 
     const escKeyDownHandler = (evt) => {
       if (evt.key === 'Escape') {
@@ -78,6 +85,7 @@ export default class TripPresenter {
     function replaceFormToTrip() {
       replace(pointComponent, eventFormComponent);
     }
+
   }
 
 }
