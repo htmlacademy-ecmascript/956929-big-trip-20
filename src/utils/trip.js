@@ -72,5 +72,8 @@ function isTripPast (date) {
   return dayjs().isAfter(date, 'D');
 }
 
+function updateItem(items, update) {
+  return items.map((item) => item.id === update.id ? update : item);
+}
 
-export {getRandomArrayElement, getRandomInteger, humanizeTripDueDate, getPointDuration, upFirstLetter, isTripFuture, isTripPresent, isTripPast};
+export {getRandomArrayElement, getRandomInteger, humanizeTripDueDate, getPointDuration, upFirstLetter, isTripFuture, isTripPresent, isTripPast, updateItem};

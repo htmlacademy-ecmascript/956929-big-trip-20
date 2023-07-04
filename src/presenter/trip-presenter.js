@@ -1,91 +1,124 @@
-import SortView from '../view/sort-view.js';
-import TripListView from '../view/trip-list-view.js';
 import PointView from '../view/point-view.js';
 import PointEditView from '../view/point-edit-view.js';
-import NoTripView from '../view/no-trip-view.js';
 
-import {render, replace} from '../framework/render.js';
+import {render, replace, remove} from '../framework/render.js';
+import {MODE} from '../const.js';
+
 
 export default class TripPresenter {
-  #container = null;
-  #tripsModel = null;
-  #trips;
+  #tripContainer = null;
+  #handleDataChange = null;
+  #handleModeChange = null;
+
+  #trip = null;
   #offers;
   #destinations;
   #destinationsList;
-  #tripListComponent = new TripListView();
-  #sortComponent = new SortView();
+  #mode = MODE.DEFAULT;
 
-  constructor({tripPointEditContainer, tripsModel}) {
-    this.#container = tripPointEditContainer;
-    this.#tripsModel = tripsModel;
+  #tripComponent = null;
+  #tripEditComponent = null;
+
+
+  constructor({tripContainer, offers, destinations, destinationsList, onDataChange, onModeChange}) {
+    this.#tripContainer = tripContainer;
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this.#destinationsList = destinationsList;
+
+    this.#handleDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
-  init() {
-    this.#trips = [...this.#tripsModel.trips];
-    this.#offers = {...this.#tripsModel.offers};
-    this.#destinations = [...this.#tripsModel.destinations];
-    this.#destinationsList = [...this.#tripsModel.destinationsList];
+  init(trip) {
 
+    this.#trip = trip;
 
-    for (let i = 0; i < this.#trips.length; i++) {
-      this.#renderTrips(this.#trips[i], this.#offers, this.#destinations, this.#destinationsList);
-    }
+    const prevTripComponent = this.#tripComponent;
+    const prevTripEditComponent = this.#tripEditComponent;
 
-    if (this.#trips.length === 0) {
-      render(new NoTripView(), this.#container);
-    }
-  }
-
-
-  #renderTrips(trip, offers, destinations, destinationsList) {
-
-    render(this.#sortComponent, this.#container);
-    render(this.#tripListComponent, this.#container);
-
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceFormToTrip();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    const pointComponent = new PointView({
-      trip,
-      offers,
-      destinations,
-      onEditClick: () => {
-        replaceTripToForm();
-        document.addEventListener('keydown', escKeyDownHandler);
-      }
+    this.#tripComponent = new PointView({
+      trip: this.#trip,
+      offers: this.#offers,
+      destinations: this.#destinations,
+      destinationsList: this.#destinationsList,
+      onEditClick: this.#handleEditClick,
+      onFavoriteClick: this.#handleFavoriteClick,
+    });
+    this.#tripEditComponent = new PointEditView({
+      trip: this.#trip,
+      offers: this.#offers,
+      destinations: this.#destinations,
+      destinationsList: this.#destinationsList,
+      onFormSubmit: this.#handleFormSubmit,
+      onRollUpButtonClick: this.#handleFormClick,
     });
 
-    const eventFormComponent = new PointEditView({
-      trip,
-      offers,
-      destinationsList,
-      destinations,
-      onEditClick: () => {
-        replaceFormToTrip();
-        document.addEventListener('keydown', escKeyDownHandler);
-      },
-      onRollUpButtonClick: () => {
-        replaceFormToTrip();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    });
-
-    render(pointComponent, this.#tripListComponent.element);
-
-    function replaceTripToForm() {
-      replace(eventFormComponent, pointComponent);
+    if (prevTripEditComponent === null || prevTripComponent === null) {
+      render(this.#tripComponent, this.#tripContainer);
+      return;
     }
 
-    function replaceFormToTrip() {
-      replace(pointComponent, eventFormComponent);
+    if (this.#mode === MODE.EDITING) {
+      replace(this.#tripEditComponent, prevTripEditComponent);
     }
+
+    if (this.#mode === MODE.DEFAULT) {
+      replace(this.#tripComponent, prevTripComponent);
+    }
+
+    remove(prevTripComponent);
+    remove(prevTripEditComponent);
 
   }
+
+  destroy() {
+    remove(this.#tripComponent);
+    remove(this.#tripEditComponent);
+  }
+
+  resetView() {
+    if (this.#mode !== MODE.DEFAULT) {
+      this.#replaceFormToTrip();
+    }
+  }
+
+  #replaceFormToTrip() {
+    replace(this.#tripComponent, this.#tripEditComponent);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = MODE.DEFAULT;
+  }
+
+  #replaceTripToForm() {
+    replace(this.#tripEditComponent, this.#tripComponent);
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#handleModeChange();
+    this.#mode = MODE.EDITING;
+
+  }
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#replaceFormToTrip();
+    }
+  };
+
+  #handleEditClick = () => {
+    this.#replaceTripToForm();
+  };
+
+  #handleFormSubmit = (trip) => {
+    this.#handleDataChange(trip);
+    this.#replaceFormToTrip();
+  };
+
+  #handleFormClick = () => {
+    this.#replaceFormToTrip();
+  };
+
+  #handleFavoriteClick = () => {
+    this.#handleDataChange({...this.#trip, isFavorite: !this.#trip.isFavorite});
+  };
 
 }

@@ -141,15 +141,15 @@ function createPointEditViewTemplate(trip, pointOffers, destinationsList, pointD
 
 export default class PointEditView extends AbstractView {
 
-  #trip;
-  #pointOffers;
-  #destinationsList;
-  #pointDestinations;
+  #trip = null;
+  #pointOffers = null;
+  #destinationsList = null;
+  #pointDestinations = null;
 
-  #handleFormSubmit;
-  #handleFormClick;
+  #handleFormSubmit = null;
+  #handleFormClick = null;
 
-  constructor({trip, offers, destinationsList, destinations, onEditClick, onRollUpButtonClick}) {
+  constructor({trip, offers, destinationsList, destinations, onFormSubmit, onRollUpButtonClick}) {
     super();
     this.#trip = trip;
     this.#pointOffers = offers;
@@ -157,7 +157,7 @@ export default class PointEditView extends AbstractView {
     this.#pointDestinations = destinations;
 
     this.#handleFormClick = onRollUpButtonClick;
-    this.#handleFormSubmit = onEditClick;
+    this.#handleFormSubmit = onFormSubmit;
 
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpButtonHandler);
     this.element.querySelector('.event.event--edit').addEventListener('submit', this.#formSubmitHandler);

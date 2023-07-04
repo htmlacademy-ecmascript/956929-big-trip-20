@@ -1,9 +1,9 @@
 import {getRandomArrayElement, getRandomInteger} from '../utils/trip.js';
 import {TYPES, PRICE} from '../const.js';
+import {nanoid} from 'nanoid';
 
 const mockPoint = [
   {
-    id: 0,
     type: TYPES.TAXI,
     destination: getRandomInteger(0, 5),
     dateFrom: new Date(Date.parse('2023-07-03T13:12:44.845Z')),
@@ -13,7 +13,6 @@ const mockPoint = [
     isFavorite: true
   },
   {
-    id: 1,
     type: TYPES.BUS,
     destination: getRandomInteger(0, 5),
     dateFrom: new Date(Date.parse('2023-07-03T13:12:44.845Z')),
@@ -23,7 +22,6 @@ const mockPoint = [
     isFavorite: false
   },
   {
-    id: 2,
     type: TYPES.TRAIN,
     destination: getRandomInteger(0, 5),
     dateFrom: new Date(Date.parse('2023-07-16T12:23:22.845Z')),
@@ -33,7 +31,6 @@ const mockPoint = [
     isFavorite: false
   },
   {
-    id: 3,
     type: TYPES.SHIP,
     destination: getRandomInteger(0, 5),
     dateFrom: new Date(Date.parse('2023-12-13T05:03:02.845Z')),
@@ -45,7 +42,7 @@ const mockPoint = [
 ];
 
 function getRandomPoint() {
-  return getRandomArrayElement(mockPoint);
+  return {id: nanoid(), ...getRandomArrayElement(mockPoint)};
 }
 
 export {getRandomPoint};

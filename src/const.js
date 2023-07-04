@@ -26,7 +26,7 @@ const PRICE = {
   MAX: 95
 };
 
-const POINT_COUNT = 0;
+const POINT_COUNT = 5;
 
 const DATE_FORMAT = {
   HOUR_MINUTES: 'H:mm',
@@ -43,5 +43,9 @@ const FILTER_TYPE = {
   PAST: 'past',
 };
 
+const MODE = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
 
-export {TYPES, PRICE, POINT_COUNT, DATE_FORMAT, BLANK_POINT, FILTER_TYPE};
+export {TYPES, PRICE, POINT_COUNT, DATE_FORMAT, BLANK_POINT, FILTER_TYPE, MODE};
