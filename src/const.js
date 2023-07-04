@@ -10,13 +10,23 @@ const TYPES = {
   RESTAURANT: 'restaurant'
 };
 
+const BLANK_POINT = {
+  id: '',
+  type: TYPES.TRAIN,
+  destination: '',
+  dateFrom: '',
+  dateTo: '',
+  basePrice: '',
+  offers: [],
+  isFavorite: ''
+};
 
 const PRICE = {
   MIN: 1,
   MAX: 95
 };
 
-const POINT_COUNT = 10;
+const POINT_COUNT = 0;
 
 const DATE_FORMAT = {
   HOUR_MINUTES: 'H:mm',
@@ -26,5 +36,12 @@ const DATE_FORMAT = {
   DAY_MONTH_YEAR_TIME_SLASHED: 'DD/MM/YY HH:mm'
 };
 
+const FILTER_TYPE = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
+};
 
-export {TYPES, PRICE, POINT_COUNT, DATE_FORMAT};
+
+export {TYPES, PRICE, POINT_COUNT, DATE_FORMAT, BLANK_POINT, FILTER_TYPE};

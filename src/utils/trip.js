@@ -1,7 +1,11 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 
 dayjs.extend(duration);
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 
 const MSEC_IN_SEC = 1000;
 const SEC_IN_MIN = 60;
@@ -53,5 +57,20 @@ function upFirstLetter(str) {
   return str[0].toUpperCase() + str.slice(1);
 }
 
+function isTripFuture (date) {
+  return dayjs().isBefore(date, 'D');
+}
 
-export {getRandomArrayElement, getRandomInteger, humanizeTripDueDate, getPointDuration, upFirstLetter};
+function isTripPresent(dateFrom, dateTo) {
+  const isDateFromPast = dayjs().isSameOrAfter(dayjs(dateFrom), 'D');
+  const isDateToFuture = dayjs().isSameOrBefore(dayjs(dateTo), 'D');
+
+  return isDateFromPast && isDateToFuture;
+}
+
+function isTripPast (date) {
+  return dayjs().isAfter(date, 'D');
+}
+
+
+export {getRandomArrayElement, getRandomInteger, humanizeTripDueDate, getPointDuration, upFirstLetter, isTripFuture, isTripPresent, isTripPast};

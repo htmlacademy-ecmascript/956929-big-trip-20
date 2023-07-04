@@ -1,4 +1,4 @@
-import {humanizeTripDueDate, getPointDuration} from '../utils.js';
+import {humanizeTripDueDate, getPointDuration} from '../utils/trip.js';
 import {DATE_FORMAT} from '../const.js';
 
 import AbstractView from '../framework/view/abstract-view.js';

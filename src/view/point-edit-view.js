@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import {TYPES, DATE_FORMAT} from '../const.js';
-import {upFirstLetter, humanizeTripDueDate} from '../utils.js';
+import {upFirstLetter, humanizeTripDueDate} from '../utils/trip.js';
 
 function createEventTypeItemsTemplate(types) {
   return (`
@@ -17,7 +17,6 @@ function createDestinationsListOptionsTemplate(destinationsList) {
 }
 
 function createEventDetailsTemplate(pointOffers, trip, pointDestinations) {
-
   const {destination} = trip;
   const tripDestination = pointDestinations.filter((value) => value.id === destination);
   const description = tripDestination[0].description;
