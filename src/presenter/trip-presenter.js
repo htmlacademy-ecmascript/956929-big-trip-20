@@ -3,6 +3,8 @@ import TripListView from '../view/trip-list-view.js';
 import NoTripView from '../view/no-trip-view.js';
 import {updateItem} from '../utils/trip.js';
 import PointPresenter from './point-presenter.js';
+import {sorting} from '../utils/sort.js';
+import {SORT_TYPE} from '../const.js';
 
 import {render} from '../framework/render.js';
 
@@ -17,8 +19,10 @@ export default class TripPresenter {
   #tripPresenters = new Map();
 
   #tripListComponent = new TripListView();
-  #sortComponent = new SortView();
+  #sortComponent = null;
   #noTripComponent = new NoTripView();
+
+  #currentSortType = SORT_TYPE.DAY;
 
   constructor({tripPointEditContainer, tripsModel}) {
     this.#container = tripPointEditContainer;
@@ -30,6 +34,8 @@ export default class TripPresenter {
     this.#offers = {...this.#tripsModel.offers};
     this.#destinations = [...this.#tripsModel.destinations];
     this.#destinationsList = [...this.#tripsModel.destinationsList];
+
+    sorting(this.#trips, this.#currentSortType);
 
     if (this.#trips.length === 0) {
       this.#renderNoTrip();
@@ -46,7 +52,31 @@ export default class TripPresenter {
   }
 
   #renderSort() {
+    this.#sortComponent = new SortView({
+      onSortTypeChange: this.#handleSortTypeChange
+    });
     render(this.#sortComponent, this.#container);
+  }
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortTrips(sortType);
+    this.#clearTrips();
+    this.#renderTrips(this.#trips, this.#offers, this.#destinations, this.#destinationsList);
+  };
+
+  #sortTrips(sortType) {
+    sorting(this.#trips, sortType);
+    this.#currentSortType = sortType;
+  }
+
+
+  #clearTrips() {
+    this.#tripPresenters.forEach((presenter) => presenter.destroy());
+    this.#tripPresenters.clear();
   }
 
   #renderList() {
