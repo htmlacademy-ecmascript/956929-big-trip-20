@@ -1,124 +1,84 @@
-import PointView from '../view/point-view.js';
-import PointEditView from '../view/point-edit-view.js';
+import SortView from '../view/sort-view.js';
+import TripListView from '../view/trip-list-view.js';
+import NoTripView from '../view/no-trip-view.js';
+import {updateItem} from '../utils/trip.js';
+import PointPresenter from './point-presenter.js';
 
-import {render, replace, remove} from '../framework/render.js';
-import {MODE} from '../const.js';
-
+import {render} from '../framework/render.js';
 
 export default class TripPresenter {
-  #tripContainer = null;
-  #handleDataChange = null;
-  #handleModeChange = null;
-
-  #trip = null;
+  #container = null;
+  #tripsModel = null;
+  #trips;
   #offers;
   #destinations;
   #destinationsList;
-  #mode = MODE.DEFAULT;
 
-  #tripComponent = null;
-  #tripEditComponent = null;
+  #tripPresenters = new Map();
 
+  #tripListComponent = new TripListView();
+  #sortComponent = new SortView();
+  #noTripComponent = new NoTripView();
 
-  constructor({tripContainer, offers, destinations, destinationsList, onDataChange, onModeChange}) {
-    this.#tripContainer = tripContainer;
-    this.#offers = offers;
-    this.#destinations = destinations;
-    this.#destinationsList = destinationsList;
-
-    this.#handleDataChange = onDataChange;
-    this.#handleModeChange = onModeChange;
+  constructor({tripPointEditContainer, tripsModel}) {
+    this.#container = tripPointEditContainer;
+    this.#tripsModel = tripsModel;
   }
 
-  init(trip) {
+  init() {
+    this.#trips = [...this.#tripsModel.trips];
+    this.#offers = {...this.#tripsModel.offers};
+    this.#destinations = [...this.#tripsModel.destinations];
+    this.#destinationsList = [...this.#tripsModel.destinationsList];
 
-    this.#trip = trip;
+    if (this.#trips.length === 0) {
+      this.#renderNoTrip();
+    } else {
+      this.#renderSort();
+      this.#renderList();
 
-    const prevTripComponent = this.#tripComponent;
-    const prevTripEditComponent = this.#tripEditComponent;
+      this.#renderTrips(this.#trips, this.#offers, this.#destinations, this.#destinationsList);
+    }
+  }
 
-    this.#tripComponent = new PointView({
-      trip: this.#trip,
-      offers: this.#offers,
-      destinations: this.#destinations,
-      destinationsList: this.#destinationsList,
-      onEditClick: this.#handleEditClick,
-      onFavoriteClick: this.#handleFavoriteClick,
+  #renderNoTrip() {
+    render(this.#noTripComponent, this.#container);
+  }
+
+  #renderSort() {
+    render(this.#sortComponent, this.#container);
+  }
+
+  #renderList() {
+    render(this.#tripListComponent, this.#container);
+  }
+
+  #renderTrips(trips, offers, destinations, destinationsList) {
+    for (let i = 0; i < trips.length; i++) {
+      this.#renderTrip(trips[i], offers, destinations, destinationsList);
+    }
+  }
+
+  #renderTrip(trip, offers, destinations, destinationsList) {
+    const tripPresenter = new PointPresenter({
+      tripContainer: this.#tripListComponent.element,
+      offers: offers,
+      destinations: destinations,
+      destinationsList: destinationsList,
+      onDataChange: this.#handleTripChange,
+      onModeChange: this.#handleModeChange,
     });
-    this.#tripEditComponent = new PointEditView({
-      trip: this.#trip,
-      offers: this.#offers,
-      destinations: this.#destinations,
-      destinationsList: this.#destinationsList,
-      onFormSubmit: this.#handleFormSubmit,
-      onRollUpButtonClick: this.#handleFormClick,
-    });
-
-    if (prevTripEditComponent === null || prevTripComponent === null) {
-      render(this.#tripComponent, this.#tripContainer);
-      return;
-    }
-
-    if (this.#mode === MODE.EDITING) {
-      replace(this.#tripEditComponent, prevTripEditComponent);
-    }
-
-    if (this.#mode === MODE.DEFAULT) {
-      replace(this.#tripComponent, prevTripComponent);
-    }
-
-    remove(prevTripComponent);
-    remove(prevTripEditComponent);
-
+    tripPresenter.init(trip);
+    this.#tripPresenters.set(trip.id, tripPresenter);
   }
 
-  destroy() {
-    remove(this.#tripComponent);
-    remove(this.#tripEditComponent);
-  }
-
-  resetView() {
-    if (this.#mode !== MODE.DEFAULT) {
-      this.#replaceFormToTrip();
-    }
-  }
-
-  #replaceFormToTrip() {
-    replace(this.#tripComponent, this.#tripEditComponent);
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
-    this.#mode = MODE.DEFAULT;
-  }
-
-  #replaceTripToForm() {
-    replace(this.#tripEditComponent, this.#tripComponent);
-    document.addEventListener('keydown', this.#escKeyDownHandler);
-    this.#handleModeChange();
-    this.#mode = MODE.EDITING;
-
-  }
-
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      this.#replaceFormToTrip();
-    }
+  #handleTripChange = (updatedTrips) => {
+    this.#trips = updateItem(this.#trips, updatedTrips);
+    this.#tripPresenters.get(updatedTrips.id).init(updatedTrips);
   };
 
-  #handleEditClick = () => {
-    this.#replaceTripToForm();
-  };
-
-  #handleFormSubmit = (trip) => {
-    this.#handleDataChange(trip);
-    this.#replaceFormToTrip();
-  };
-
-  #handleFormClick = () => {
-    this.#replaceFormToTrip();
-  };
-
-  #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#trip, isFavorite: !this.#trip.isFavorite});
+  #handleModeChange = () => {
+    this.#tripPresenters.forEach((presenter) => presenter.resetView());
   };
 
 }
