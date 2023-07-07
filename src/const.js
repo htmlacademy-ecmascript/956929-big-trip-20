@@ -48,4 +48,12 @@ const MODE = {
   EDITING: 'EDITING',
 };
 
-export {TYPES, PRICE, POINT_COUNT, DATE_FORMAT, BLANK_POINT, FILTER_TYPE, MODE};
+const SORT_TYPE = {
+  DAY: 'day',
+  EVENT:'event',
+  TIME: 'time',
+  PRICE:  'price',
+  OFFERS:'offers',
+};
+
+export {TYPES, PRICE, POINT_COUNT, DATE_FORMAT, BLANK_POINT, FILTER_TYPE, MODE, SORT_TYPE};
