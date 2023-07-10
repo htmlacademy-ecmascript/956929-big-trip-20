@@ -3,14 +3,34 @@ import {DATE_FORMAT} from '../const.js';
 
 import AbstractView from '../framework/view/abstract-view.js';
 
-function createOffersTemplate(tripOffer) {
-  return (`<ul class="event__selected-offers">
-  ${tripOffer.map(({title, price}) => `<li class="event__offer">
-      <span class="event__offer-title">${title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${price}</span>
-    </li>`).join('')}
-  </ul>`);
+function getOffers(pointOffers, offers) {
+  const activeOffers = [];
+  pointOffers.map((item) => offers.map((elem) => item.id === elem ? activeOffers.push(item) : ''));
+  return activeOffers;
+}
+
+function createOffersTemplate(pointOffers, trip) {
+  const {offers} = trip;
+
+  const offersTemplate = createOfferItemTemplate(getOffers(pointOffers, offers));
+
+  return (`
+  <ul class="event__selected-offers">
+    ${offersTemplate}
+  </ul>
+  `);
+}
+
+function createOfferItemTemplate(pointOffers) {
+  return (`
+    ${pointOffers.map(({title, price}) => `
+      <li class="event__offer">
+        <span class="event__offer-title">${title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${price}</span>
+      </li>`)
+      .join('')}
+  `);
 }
 
 function createPointTemplate(trip, pointOffers, pointDestinations) {
@@ -44,7 +64,7 @@ function createPointTemplate(trip, pointOffers, pointDestinations) {
           &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
-        ${createOffersTemplate(pointOffer)}
+          ${createOffersTemplate(pointOffer, trip)}
         <button class="${favoriteClassName}" type="button">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">

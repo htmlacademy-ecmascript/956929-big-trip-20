@@ -13,7 +13,7 @@ function sortByPrice (pointA, pointB) {
   return pointA.basePrice - pointB.basePrice ;
 }
 
-function sorting (items, sortType) {
+function sortPoints (items, sortType) {
   switch (sortType) {
     case SORT_TYPE.TIME:
       items.sort(sortByTime);
@@ -26,4 +26,4 @@ function sorting (items, sortType) {
   }
 }
 
-export {sorting};
+export {sortPoints};

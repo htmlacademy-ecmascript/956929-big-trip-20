@@ -9,7 +9,7 @@ const mockPoint = [
     dateFrom: new Date(Date.parse('2023-07-03T13:12:44.845Z')),
     dateTo: new Date(Date.parse('2023-07-03T14:34:38.375Z')),
     basePrice: getRandomInteger(PRICE.MIN, PRICE.MAX),
-    offers: [101, 102],
+    offers: ['101', '102'],
     isFavorite: true
   },
   {
@@ -18,7 +18,7 @@ const mockPoint = [
     dateFrom: new Date(Date.parse('2023-07-03T13:12:44.845Z')),
     dateTo: new Date(Date.parse('2023-07-04T16:34:38.375Z')),
     basePrice: getRandomInteger(PRICE.MIN, PRICE.MAX),
-    offers: [104],
+    offers: ['104'],
     isFavorite: false
   },
   {
@@ -36,7 +36,7 @@ const mockPoint = [
     dateFrom: new Date(Date.parse('2023-12-13T05:03:02.845Z')),
     dateTo: new Date(Date.parse('2023-12-13T10:10:11.375Z')),
     basePrice: getRandomInteger(PRICE.MIN, PRICE.MAX),
-    offers: [107, 108],
+    offers: ['107', '108'],
     isFavorite: true
   }
 ];
