@@ -4,9 +4,7 @@ import {DATE_FORMAT} from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 function getOffers(pointOffers, offers) {
-  const activeOffers = [];
-  pointOffers.map((item) => offers.map((elem) => item.id === elem ? activeOffers.push(item) : ''));
-  return activeOffers;
+  return pointOffers.filter((item) => offers.find((offerId) => offerId === item.id));
 }
 
 function createOffersTemplate(pointOffers, trip) {

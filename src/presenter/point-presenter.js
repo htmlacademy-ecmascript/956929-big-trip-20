@@ -116,7 +116,9 @@ export default class PointPresenter {
   };
 
   #handleFormClick = () => {
+    this.#tripEditComponent.reset(this.#trip);
     this.#replaceFormToTrip();
+
   };
 
   #handleFavoriteClick = () => {
