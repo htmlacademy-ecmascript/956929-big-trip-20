@@ -79,6 +79,7 @@ export default class PointPresenter {
 
   resetView() {
     if (this.#mode !== MODE.DEFAULT) {
+      this.#tripEditComponent.reset(this.#trip);
       this.#replaceFormToTrip();
     }
   }
@@ -100,6 +101,7 @@ export default class PointPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#tripEditComponent.reset(this.#trip);
       this.#replaceFormToTrip();
     }
   };

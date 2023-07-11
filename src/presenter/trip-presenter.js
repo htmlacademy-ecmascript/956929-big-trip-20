@@ -3,7 +3,7 @@ import TripListView from '../view/trip-list-view.js';
 import NoTripView from '../view/no-trip-view.js';
 import {updateItem} from '../utils/trip.js';
 import PointPresenter from './point-presenter.js';
-import {sorting} from '../utils/sort.js';
+import {sortPoints} from '../utils/sort.js';
 import {SORT_TYPE} from '../const.js';
 
 import {render} from '../framework/render.js';
@@ -35,7 +35,7 @@ export default class TripPresenter {
     this.#destinations = [...this.#tripsModel.destinations];
     this.#destinationsList = [...this.#tripsModel.destinationsList];
 
-    sorting(this.#trips, this.#currentSortType);
+    sortPoints(this.#trips, this.#currentSortType);
 
     if (this.#trips.length === 0) {
       this.#renderNoTrip();
@@ -69,7 +69,7 @@ export default class TripPresenter {
   };
 
   #sortTrips(sortType) {
-    sorting(this.#trips, sortType);
+    sortPoints(this.#trips, sortType);
     this.#currentSortType = sortType;
   }
 
