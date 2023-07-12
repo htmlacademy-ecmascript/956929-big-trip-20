@@ -1,7 +1,7 @@
 import {render, RenderPosition, remove} from '../framework/render.js';
-import {nanoid} from 'nanoid';
+// import {nanoid} from 'nanoid';
 import PointEditView from '../view/point-edit-view.js';
-import {USER_ACTION, UPDATE_TYPE} from '../const.js';
+import {USER_ACTION, UPDATE_TYPE} from '../const/const.js';
 
 export default class NewTripPresenter {
   #tripListContainer = null;
@@ -60,7 +60,8 @@ export default class NewTripPresenter {
     this.#handleDataChange(
       USER_ACTION.ADD_TRIP,
       UPDATE_TYPE.MINOR,
-      { ...trip, id: nanoid()},
+      trip
+      //{ ...trip, id: nanoid()},
     );
     this.destroy();
   };

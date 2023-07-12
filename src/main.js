@@ -6,11 +6,16 @@ import FilterModel from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import NewTripButtonView from './view/new-trip-button-view.js';
 
+import TripsApiService from './api/trips-api-service.js';
+//import OfferssApiService from './api/offers-api-service.js';
+// import DestinationsApiService from './api/destinations-api-service.js';
+import {AUTHORIZATION, END_POINT} from './const/api-service.js';
+
 const tripHeaderElement = document.querySelector('.trip-main');
 const tripHeaderFilterElement = document.querySelector('.trip-controls__filters');
 const tripEventsElement = document.querySelector('.trip-events');
 
-const tripsModel = new TripsModel();
+const tripsModel = new TripsModel({tripsApiService: new TripsApiService(END_POINT, AUTHORIZATION)});
 const filterModel = new FilterModel();
 
 const tripPresenter = new TripPresenter({
@@ -37,8 +42,10 @@ const filterPresenter = new FilterPresenter({
   tripsModel
 });
 
-render(new TripInfoView(), tripHeaderElement, RenderPosition.AFTERBEGIN);
-render(newTripButtonComponent, tripHeaderElement);
 
 filterPresenter.init();
 tripPresenter.init();
+tripsModel.init() .finally(() => {
+  render(new TripInfoView(), tripHeaderElement, RenderPosition.AFTERBEGIN);
+  render(newTripButtonComponent, tripHeaderElement);
+});

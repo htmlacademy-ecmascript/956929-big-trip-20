@@ -14,10 +14,10 @@ function createFilterTemplate(filtersItems, currentFilterType) {
 }
 
 function createFilterItemTemplate(filter, isChecked) {
-  const {type, count} = filter;
+  const {type, activeFilter} = filter;
   return `
   <div class="trip-filters__filter">
-    <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${isChecked ? 'checked' : ''} ${count === 0 ? 'disabled' : ''}>
+    <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${isChecked ? 'checked' : ''} ${activeFilter ? '' : 'disabled'}>
     <label class="trip-filters__filter-label" for="filter-${type}">${upFirstLetter(type)}</label>
   </div>`;
 }

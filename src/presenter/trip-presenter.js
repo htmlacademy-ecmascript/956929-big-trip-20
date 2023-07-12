@@ -2,25 +2,28 @@ import {render, remove} from '../framework/render.js';
 import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
 import NoTripView from '../view/no-trip-view.js';
+import LoadingView from '../view/loading-view.js';
 import PointPresenter from './point-presenter.js';
 import {sortPoints} from '../utils/sort.js';
 import NewTripPresenter from './new-trip-presenter.js';
-import {SORT_TYPE, USER_ACTION, UPDATE_TYPE, FILTER_TYPE} from '../const.js';
+import {SORT_TYPE, USER_ACTION, UPDATE_TYPE, FILTER_TYPE} from '../const/const.js';
 import {filter} from '../utils/filter.js';
 
 export default class TripPresenter {
   #container = null;
   #tripsModel = null;
-  #offers = null;
-  #destinations = null;
-  #destinationsList = null;
+  #offers = [];
+  #destinations = [];
+  #destinationsList = [];
   #filterModel = null;
   #newTripPresenter = null;
   #tripPresenters = new Map();
+  #isLoading = true;
 
   #tripListComponent = new TripListView();
   #sortComponent = null;
   #noTripComponent = null;
+  #loadingComponent = new LoadingView();
 
   #currentSortType = SORT_TYPE.DAY;
   #filterType = FILTER_TYPE.EVERYTHING;
@@ -67,13 +70,19 @@ export default class TripPresenter {
   }
 
   #renderBoard() {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     if (this.trips.length === 0) {
       this.#renderNoTrip();
       return;
     }
+
     this.#renderSort();
     this.#renderList();
-    this.#renderTrips(this.trips, this.#offers, this.#destinations, this.#destinationsList);
+    this.#renderTrips(this.trips, this.#tripsModel.offers, this.#tripsModel.destinations, this.#tripsModel.destinationsList);
   }
 
   #clearBoard({resetSortType = false} = {}) {
@@ -141,6 +150,10 @@ export default class TripPresenter {
     this.#tripPresenters.set(trip.id, tripPresenter);
   }
 
+  #renderLoading() {
+    render(this.#loadingComponent, this.#container);
+  }
+
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
       case USER_ACTION.UPDATE_TRIP:
@@ -166,6 +179,11 @@ export default class TripPresenter {
         break;
       case UPDATE_TYPE.MAJOR:
         this.#clearBoard({resetSortType: true});
+        this.#renderBoard();
+        break;
+      case UPDATE_TYPE.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
         this.#renderBoard();
         break;
     }

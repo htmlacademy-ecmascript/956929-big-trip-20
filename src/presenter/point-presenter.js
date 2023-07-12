@@ -3,7 +3,7 @@ import {render, replace, remove} from '../framework/render.js';
 import PointView from '../view/point-view.js';
 import PointEditView from '../view/point-edit-view.js';
 
-import {MODE, USER_ACTION, UPDATE_TYPE} from '../const.js';
+import {MODE, USER_ACTION, UPDATE_TYPE} from '../const/const.js';
 import {isDatesEqual, isPriceEqual} from '../utils/trip.js';
 
 export default class PointPresenter {

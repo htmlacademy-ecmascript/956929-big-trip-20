@@ -1,5 +1,5 @@
 import {render, replace, remove} from '../framework/render.js';
-import {FILTER_TYPE, UPDATE_TYPE} from '../const.js';
+import {FILTER_TYPE, UPDATE_TYPE} from '../const/const.js';
 import FilterView from '../view/filter-view';
 import {filter} from '../utils/filter.js';
 
@@ -24,7 +24,7 @@ export default class FilterPresenter {
 
     return Object.values(FILTER_TYPE).map((type) => ({
       type,
-      count: filter[type](trips).length > 0,
+      activeFilter: filter[type](trips).length > 0,
     }));
 
   }

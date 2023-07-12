@@ -15,18 +15,6 @@ const HOUR_IN_DAY = 24;
 const MSEC_IN_HOUR = MSEC_IN_SEC * SEC_IN_MIN * MIN_IN_HOUR;
 const MSEC_IN_DAY = MSEC_IN_HOUR * HOUR_IN_DAY;
 
-function getRandomArrayElement(items) {
-  return items[Math.floor(Math.random() * items.length)];
-}
-
-function getRandomInteger(a = 0, b = 1) {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  const result = Math.floor(lower + Math.random() * (upper - lower + 1));
-
-  return result;
-}
-
 function humanizeTripDueDate(dueDate, dateFrom) {
   return dueDate ? dayjs(dueDate).format(dateFrom) : '';
 }
@@ -92,4 +80,4 @@ function isPriceEqual(priceA, priceB) {
 }
 
 
-export {getRandomArrayElement, getRandomInteger, humanizeTripDueDate, getPointDuration, upFirstLetter, isTripFuture, isTripPresent, isTripPast, getDateDifference, getTimeDifference, isDatesEqual, isPriceEqual};
+export {humanizeTripDueDate, getPointDuration, upFirstLetter, isTripFuture, isTripPresent, isTripPast, getDateDifference, getTimeDifference, isDatesEqual, isPriceEqual};

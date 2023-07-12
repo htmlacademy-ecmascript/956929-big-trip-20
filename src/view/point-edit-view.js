@@ -1,5 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {TYPES, DATE_FORMAT, BLANK_POINT} from '../const.js';
+import {TYPES, DATE_FORMAT, BLANK_POINT} from '../const/const.js';
 import {upFirstLetter, humanizeTripDueDate} from '../utils/trip.js';
 
 import flatpickr from 'flatpickr';
@@ -62,7 +62,8 @@ function createOffersTemplate(pointOffers, trip) {
 }
 
 function createOffersItemTemplate(pointOffers, trip) {
-  const currentOffers = pointOffers[Object.keys(pointOffers).filter((value) => value === trip.type)];
+  //const currentOffers = pointOffers[Object.keys(pointOffers).filter((value) => value === trip.type)];
+  const currentOffers = pointOffers.filter((elem) => elem.type === trip.type)[0].offers;
 
   return (`
     ${currentOffers.map(({title, price, id}) => `
@@ -80,7 +81,8 @@ function createOffersItemTemplate(pointOffers, trip) {
 function createPhotoContainerTemplate(trip, pointDestinations) {
   const {destination} = trip;
   const tripDestination = pointDestinations.filter((value) => value.id === destination);
-  const pictures = tripDestination[0] !== undefined ? tripDestination[0].pictures : '';
+
+  const pictures = tripDestination[0] !== undefined ? tripDestination[0].images : '';
   return (`
     <div class="event__photos-container">
       <div class="event__photos-tape">
@@ -94,11 +96,10 @@ function createPhotoContainerTemplate(trip, pointDestinations) {
 
 function createPointEditViewTemplate(trip, pointOffers, destinationsList, pointDestinations) {
 
-  const {id, type, destination, destinationEmpty, dateFrom, dateTo, basePrice, basePriceEmpty} = trip;
+  //const {id, type, destination, destinationEmpty, dateFrom, dateTo, basePrice, basePriceEmpty} = trip;
+  const {id, type, destination, dateFrom, dateTo, basePrice} = trip;
   const tripDestination = pointDestinations.filter((value) => value.id === destination);
   const tripCity = tripDestination[0] !== undefined ? tripDestination[0].name : '';
-
-  const buttonSaveDisabled = destinationEmpty && basePriceEmpty;
 
   return (`
     <li class="trip-events__item">
@@ -122,7 +123,7 @@ function createPointEditViewTemplate(trip, pointOffers, destinationsList, pointD
             <label class="event__label  event__type-output" for="event-destination-1">
               ${upFirstLetter(type)}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(tripCity)}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(tripCity)}" list="destination-list-1" required>
             <datalist id="destination-list-1">
               ${createDestinationsListOptionsTemplate(destinationsList)}
             </datalist>
@@ -130,10 +131,10 @@ function createPointEditViewTemplate(trip, pointOffers, destinationsList, pointD
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${he.encode(humanizeTripDueDate(dateFrom, DATE_FORMAT.DAY_MONTH_YEAR_TIME_SLASHED))}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${he.encode(humanizeTripDueDate(dateFrom, DATE_FORMAT.DAY_MONTH_YEAR_TIME_SLASHED))}" required>
             —
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${he.encode(humanizeTripDueDate(dateTo, DATE_FORMAT.DAY_MONTH_YEAR_TIME_SLASHED))}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${he.encode(humanizeTripDueDate(dateTo, DATE_FORMAT.DAY_MONTH_YEAR_TIME_SLASHED))}" required>
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -141,10 +142,10 @@ function createPointEditViewTemplate(trip, pointOffers, destinationsList, pointD
               <span class="visually-hidden">Price</span>
               €
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" name="event-price" value="${he.encode(String(basePrice))}">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${he.encode(String(basePrice))}" required>
           </div>
 
-          ${createFormButtonsTemplate(buttonSaveDisabled, id === '-1')}
+          ${createFormButtonsTemplate(id === '-1')}
 
         </header>
         ${createEventDetailsTemplate(pointOffers, trip, pointDestinations)}
@@ -153,9 +154,9 @@ function createPointEditViewTemplate(trip, pointOffers, destinationsList, pointD
   `);
 }
 
-function createFormButtonsTemplate(buttonSaveDisabled, button) {
+function createFormButtonsTemplate(button) {
   return `
-    <button class="event__save-btn  btn  btn--blue" type="submit" ${buttonSaveDisabled ? '' : 'disabled'}>Save</button>
+    <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
     <button class="event__reset-btn" type="reset">${button ? 'Cancel' : 'Delete'}</button>
     <button class="event__rollup-btn" type="button"  ${button ? 'style="display:none;"' : ''}>
       <span class="visually-hidden">Open event</span>
@@ -315,7 +316,7 @@ export default class PointEditView extends AbstractStatefulView {
     evt.preventDefault();
     this.updateElement({
       basePrice: evt.target.valueAsNumber,
-      basePriceEmpty: evt.target.valueAsNumber !== ''
+      //basePriceEmpty: evt.target.valueAsNumber !== ''
     });
   };
 
@@ -328,17 +329,18 @@ export default class PointEditView extends AbstractStatefulView {
     }
     this.updateElement({
       destination: newDestination.id,
-      destinationEmpty: newDestination.id !== ''
+      //destinationEmpty: newDestination.id !== ''
     });
   };
 
   static parseTripToState(trip) {
-    return {...trip, destinationEmpty: trip.destination !== '', basePriceEmpty: trip.basePrice !== ''};
+    //return {...trip, destinationEmpty: trip.destination !== '', basePriceEmpty: trip.basePrice !== ''};
+    return {...trip};
   }
 
   static parseStateToTrip(state) {
-    delete {...state.destinationEmpty};
-    delete {...state.basePriceEmpty};
+    //delete {...state.destinationEmpty};
+    //delete {...state.basePriceEmpty};
     return {...state};
   }
 }
