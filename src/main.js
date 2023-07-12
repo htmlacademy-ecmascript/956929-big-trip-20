@@ -1,21 +1,44 @@
 import TripInfoView from './view/trip-info-view.js';
-import FilterView from './view/filter-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import {render, RenderPosition} from './framework/render.js';
 import TripsModel from './model/model.js';
-import {generateFilter} from './mock/filter.js';
+import FilterModel from './model/filter-model.js';
+import FilterPresenter from './presenter/filter-presenter.js';
+import NewTripButtonView from './view/new-trip-button-view.js';
 
 const tripHeaderElement = document.querySelector('.trip-main');
 const tripHeaderFilterElement = document.querySelector('.trip-controls__filters');
 const tripEventsElement = document.querySelector('.trip-events');
 
 const tripsModel = new TripsModel();
-const tripPresenter = new TripPresenter({tripPointEditContainer: tripEventsElement, tripsModel});
+const filterModel = new FilterModel();
 
-const filters = generateFilter(tripsModel.trips);
+const tripPresenter = new TripPresenter({
+  tripPointEditContainer: tripEventsElement,
+  tripsModel,
+  filterModel,
+  onNewTripDestroy: handleNewTripFormClose
+});
+
+const newTripButtonComponent = new NewTripButtonView({
+  onClick: handleNewTripButtonClick
+});
+function handleNewTripFormClose() {
+  newTripButtonComponent.element.disabled = false;
+}
+function handleNewTripButtonClick() {
+  tripPresenter.createTrip();
+  newTripButtonComponent.element.disabled = true;
+}
+
+const filterPresenter = new FilterPresenter({
+  filterContainer: tripHeaderFilterElement,
+  filterModel,
+  tripsModel
+});
 
 render(new TripInfoView(), tripHeaderElement, RenderPosition.AFTERBEGIN);
-render(new FilterView(filters), tripHeaderFilterElement);
+render(newTripButtonComponent, tripHeaderElement);
 
-
+filterPresenter.init();
 tripPresenter.init();

@@ -1,9 +1,10 @@
+import {render, replace, remove} from '../framework/render.js';
+
 import PointView from '../view/point-view.js';
 import PointEditView from '../view/point-edit-view.js';
 
-import {render, replace, remove} from '../framework/render.js';
-import {MODE} from '../const.js';
-
+import {MODE, USER_ACTION, UPDATE_TYPE} from '../const.js';
+import {isDatesEqual, isPriceEqual} from '../utils/trip.js';
 
 export default class PointPresenter {
   #tripContainer = null;
@@ -43,7 +44,7 @@ export default class PointPresenter {
       destinations: this.#destinations,
       destinationsList: this.#destinationsList,
       onEditClick: this.#handleEditClick,
-      onFavoriteClick: this.#handleFavoriteClick,
+      onFavoriteClick: this.#handleFavoriteClick
     });
     this.#tripEditComponent = new PointEditView({
       trip: this.#trip,
@@ -52,6 +53,7 @@ export default class PointPresenter {
       destinationsList: this.#destinationsList,
       onFormSubmit: this.#handleFormSubmit,
       onRollUpButtonClick: this.#handleFormClick,
+      onDeleteClick: this.#handleDeleteClick
     });
 
     if (prevTripEditComponent === null || prevTripComponent === null) {
@@ -110,8 +112,17 @@ export default class PointPresenter {
     this.#replaceTripToForm();
   };
 
-  #handleFormSubmit = (trip) => {
-    this.#handleDataChange(trip);
+  #handleFormSubmit = (update) => {
+    const isMinorUpdate =
+    !isDatesEqual(this.#trip.dateFrom, update.dateFrom) ||
+    !isDatesEqual(this.#trip.dateTo, update.dateTo) ||
+    !isPriceEqual(this.#trip.basePrice, update.basePrice);
+
+    this.#handleDataChange(
+      USER_ACTION.UPDATE_TRIP,
+      isMinorUpdate ? UPDATE_TYPE.MINOR : UPDATE_TYPE.PATCH,
+      update,
+    );
     this.#replaceFormToTrip();
   };
 
@@ -122,7 +133,19 @@ export default class PointPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#trip, isFavorite: !this.#trip.isFavorite});
+    this.#handleDataChange(
+      USER_ACTION.UPDATE_TRIP,
+      UPDATE_TYPE.MINOR,
+      {...this.#trip, isFavorite: !this.#trip.isFavorite}
+    );
+  };
+
+  #handleDeleteClick = (trip) => {
+    this.#handleDataChange(
+      USER_ACTION.DELETE_TRIP,
+      UPDATE_TYPE.MINOR,
+      trip
+    );
   };
 
 }

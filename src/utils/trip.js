@@ -72,10 +72,6 @@ function isTripPast (date) {
   return dayjs().isAfter(date, 'D');
 }
 
-function updateItem(items, update) {
-  return items.map((item) => item.id === update.id ? update : item);
-}
-
 function getDateDifference (pointA, pointB) {
   return dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 }
@@ -87,4 +83,13 @@ function getTimeDifference (pointA, pointB) {
   return pointBdifference - pointAdifference;
 }
 
-export {getRandomArrayElement, getRandomInteger, humanizeTripDueDate, getPointDuration, upFirstLetter, isTripFuture, isTripPresent, isTripPast, updateItem, getDateDifference, getTimeDifference};
+function isDatesEqual(dateA, dateB) {
+  return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'm');
+}
+
+function isPriceEqual(priceA, priceB) {
+  return (priceA - priceB) === 0;
+}
+
+
+export {getRandomArrayElement, getRandomInteger, humanizeTripDueDate, getPointDuration, upFirstLetter, isTripFuture, isTripPresent, isTripPast, getDateDifference, getTimeDifference, isDatesEqual, isPriceEqual};

@@ -34,7 +34,8 @@ function createOfferItemTemplate(pointOffers) {
 function createPointTemplate(trip, pointOffers, pointDestinations) {
   const {type, destination, dateFrom, dateTo, basePrice, isFavorite} = trip;
   const tripDestination = pointDestinations.filter((value) => value.id === destination);
-  const tripCity = tripDestination[0].name;
+
+  const tripCity = tripDestination[0] !== undefined ? tripDestination[0].name : '';
   const pointOffer = pointOffers[Object.keys(pointOffers).filter((value) => value === type)[0]];
 
 
