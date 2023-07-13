@@ -11,22 +11,15 @@ const TYPES = {
 };
 
 const BLANK_POINT = {
-  id: '',
-  type: TYPES.TRAIN,
+  id: '-1',
+  type: TYPES.TAXI,
   destination: '',
-  dateFrom: '',
-  dateTo: '',
+  dateFrom: new Date,
+  dateTo: new Date,
   basePrice: '',
   offers: [],
-  isFavorite: ''
+  isFavorite: false
 };
-
-const PRICE = {
-  MIN: 1,
-  MAX: 95
-};
-
-const POINT_COUNT = 5;
 
 const DATE_FORMAT = {
   HOUR_MINUTES: 'H:mm',
@@ -56,4 +49,17 @@ const SORT_TYPE = {
   OFFERS:'offers',
 };
 
-export {TYPES, PRICE, POINT_COUNT, DATE_FORMAT, BLANK_POINT, FILTER_TYPE, MODE, SORT_TYPE};
+const USER_ACTION = {
+  UPDATE_TRIP: 'UPDATE_TRIP',
+  ADD_TRIP: 'ADD_TRIP',
+  DELETE_TRIP: 'DELETE_TRIP',
+};
+
+const UPDATE_TYPE = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+  INIT: 'INIT'
+};
+
+export {TYPES, DATE_FORMAT, BLANK_POINT, FILTER_TYPE, MODE, SORT_TYPE, USER_ACTION, UPDATE_TYPE};

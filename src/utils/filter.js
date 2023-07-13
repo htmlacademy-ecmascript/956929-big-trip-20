@@ -1,4 +1,4 @@
-import {FILTER_TYPE} from '../const.js';
+import {FILTER_TYPE} from '../const/const.js';
 import {isTripFuture, isTripPresent, isTripPast} from '../utils/trip.js';
 
 const filter = {

@@ -1,4 +1,4 @@
-import {SORT_TYPE} from '../const.js';
+import {SORT_TYPE} from '../const/const.js';
 import {getDateDifference, getTimeDifference} from '../utils/trip.js';
 
 function sortByDate(pointA, pointB) {
