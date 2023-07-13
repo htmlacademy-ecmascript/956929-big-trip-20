@@ -95,8 +95,6 @@ function createPhotoContainerTemplate(trip, pointDestinations) {
 
 
 function createPointEditViewTemplate(trip, pointOffers, destinationsList, pointDestinations) {
-
-  //const {id, type, destination, destinationEmpty, dateFrom, dateTo, basePrice, basePriceEmpty} = trip;
   const {id, type, destination, dateFrom, dateTo, basePrice} = trip;
   const tripDestination = pointDestinations.filter((value) => value.id === destination);
   const tripCity = tripDestination[0] !== undefined ? tripDestination[0].name : '';
@@ -142,7 +140,7 @@ function createPointEditViewTemplate(trip, pointOffers, destinationsList, pointD
               <span class="visually-hidden">Price</span>
               €
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value="${he.encode(String(basePrice))}" required>
+            <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" name="event-price" value="${he.encode(String(basePrice))}" required>
           </div>
 
           ${createFormButtonsTemplate(id === '-1')}
@@ -154,11 +152,11 @@ function createPointEditViewTemplate(trip, pointOffers, destinationsList, pointD
   `);
 }
 
-function createFormButtonsTemplate(button) {
+function createFormButtonsTemplate(isNewForm) {
   return `
     <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">${button ? 'Cancel' : 'Delete'}</button>
-    <button class="event__rollup-btn" type="button"  ${button ? 'style="display:none;"' : ''}>
+    <button class="event__reset-btn" type="reset">${isNewForm ? 'Cancel' : 'Delete'}</button>
+    <button class="event__rollup-btn" type="button"  ${isNewForm ? 'style="display:none;"' : ''}>
       <span class="visually-hidden">Open event</span>
     </button>
   `;
@@ -316,7 +314,6 @@ export default class PointEditView extends AbstractStatefulView {
     evt.preventDefault();
     this.updateElement({
       basePrice: evt.target.valueAsNumber,
-      //basePriceEmpty: evt.target.valueAsNumber !== ''
     });
   };
 
@@ -329,18 +326,14 @@ export default class PointEditView extends AbstractStatefulView {
     }
     this.updateElement({
       destination: newDestination.id,
-      //destinationEmpty: newDestination.id !== ''
     });
   };
 
   static parseTripToState(trip) {
-    //return {...trip, destinationEmpty: trip.destination !== '', basePriceEmpty: trip.basePrice !== ''};
     return {...trip};
   }
 
   static parseStateToTrip(state) {
-    //delete {...state.destinationEmpty};
-    //delete {...state.basePriceEmpty};
     return {...state};
   }
 }
