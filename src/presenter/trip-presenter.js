@@ -1,4 +1,5 @@
 import {render, remove} from '../framework/render.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
 import NoTripView from '../view/no-trip-view.js';
@@ -8,6 +9,11 @@ import {sortPoints} from '../utils/sort.js';
 import NewTripPresenter from './new-trip-presenter.js';
 import {SORT_TYPE, USER_ACTION, UPDATE_TYPE, FILTER_TYPE} from '../const/const.js';
 import {filter} from '../utils/filter.js';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class TripPresenter {
   #container = null;
@@ -20,10 +26,16 @@ export default class TripPresenter {
   #tripPresenters = new Map();
   #isLoading = true;
 
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
+
   #tripListComponent = new TripListView();
   #sortComponent = null;
   #noTripComponent = null;
   #loadingComponent = new LoadingView();
+
 
   #currentSortType = SORT_TYPE.DAY;
   #filterType = FILTER_TYPE.EVERYTHING;
@@ -34,6 +46,7 @@ export default class TripPresenter {
     this.#filterModel = filterModel;
 
     this.#newTripPresenter = new NewTripPresenter({
+
       tripListContainer: this.#tripListComponent.element,
       onDataChange: this.#handleViewAction,
       onDestroy: onNewTripDestroy
@@ -48,7 +61,8 @@ export default class TripPresenter {
     this.#currentSortType = SORT_TYPE.DAY;
     this.#filterModel.setFilter(UPDATE_TYPE.MAJOR, FILTER_TYPE.EVERYTHING);
 
-    this.#newTripPresenter.init(this.#offers, this.#destinations, this.#destinationsList);
+
+    this.#newTripPresenter.init(this.#tripsModel.offers, this.#tripsModel.destinations, this.#tripsModel.destinationsList);
   }
 
   get trips() {
@@ -154,18 +168,37 @@ export default class TripPresenter {
     render(this.#loadingComponent, this.#container);
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
+
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case USER_ACTION.UPDATE_TRIP:
-        this.#tripsModel.updatePoint(updateType, update);
+        this.#tripPresenters.get(update.id).setSaving();
+        try {
+          await this.#tripsModel.updatePoint(updateType, update);
+        } catch(err) {
+          this.#tripPresenters.get(update.id).setAborting();
+        }
         break;
       case USER_ACTION.ADD_TRIP:
-        this.#tripsModel.addPoint(updateType, update);
+        this.#newTripPresenter.setSaving();
+        try {
+          await this.#tripsModel.addPoint(updateType, update);
+        } catch(err) {
+          this.#newTripPresenter.setAborting();
+        }
         break;
       case USER_ACTION.DELETE_TRIP:
-        this.#tripsModel.deletePoint(updateType, update);
+        this.#tripPresenters.get(update.id).setDeleting();
+        try {
+          await this.#tripsModel.deletePoint(updateType, update);
+        } catch(err) {
+          this.#tripPresenters.get(update.id).setAborting();
+        }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
