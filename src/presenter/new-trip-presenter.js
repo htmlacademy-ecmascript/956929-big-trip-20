@@ -80,9 +80,7 @@ export default class NewTripPresenter {
       USER_ACTION.ADD_TRIP,
       UPDATE_TYPE.MINOR,
       trip
-      //{ ...trip, id: nanoid()},
     );
-    // this.destroy();
   };
 
   #handleDeleteClick = () => {

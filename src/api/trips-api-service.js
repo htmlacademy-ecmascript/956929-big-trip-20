@@ -22,7 +22,7 @@ export default class TripsApiService extends ApiService {
       url: `${Url.TRIPS}/${trip.id}`,
       method: Method.PUT,
       body: JSON.stringify(this.#adaptToServer(trip)),
-      headers: new Headers({'Content-Type': 'application/json'}),
+      headers: new Headers({'Content-Type': 'application/json'})
     });
 
     const parsedResponse = await ApiService.parseResponse(response);
@@ -35,7 +35,7 @@ export default class TripsApiService extends ApiService {
       url: Url.TRIPS,
       method: Method.POST,
       body: JSON.stringify(this.#adaptToServer(trip)),
-      headers: new Headers({'Content-Type' : 'application/json'}),
+      headers: new Headers({'Content-Type' : 'application/json'})
     });
 
     const parsedResponse = await ApiService.parseResponse(response);

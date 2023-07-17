@@ -6,6 +6,7 @@ const NoTripsTextType = {
   [FILTER_TYPE.FUTURE]: 'There are no future events now',
   [FILTER_TYPE.PRESENT]: 'There are no present events now',
   [FILTER_TYPE.PAST]: 'There are no past events now',
+  ['ERROR']: 'Server is not available now'
 };
 
 function createNoTripTemplate(filterType) {

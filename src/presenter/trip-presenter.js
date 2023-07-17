@@ -10,6 +10,7 @@ import NewTripPresenter from './new-trip-presenter.js';
 import {SORT_TYPE, USER_ACTION, UPDATE_TYPE, FILTER_TYPE} from '../const/const.js';
 import {filter} from '../utils/filter.js';
 
+
 const TimeLimit = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000,
@@ -219,6 +220,11 @@ export default class TripPresenter {
         remove(this.#loadingComponent);
         this.#renderBoard();
         break;
+      case UPDATE_TYPE.ERROR:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#filterType = 'ERROR';
+        this.#renderNoTrip();
     }
   };
 

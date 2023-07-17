@@ -5,7 +5,6 @@ import AbstractView from '../framework/view/abstract-view.js';
 
 function getOffers(pointOffers, offers) {
   return pointOffers.filter((item) => offers.find((offerId) => offerId === item.id));
-  //return pointOffers.offers.filter((item) => offers.find((offerId) => offerId === item.id));
 }
 
 function createOffersTemplate(pointOffers, trip) {
@@ -39,8 +38,6 @@ function createPointTemplate(trip, pointOffers, pointDestinations) {
   const tripCity = tripDestination[0] !== undefined ? tripDestination[0].name : '';
 
   const pointOffer = pointOffers[Object.keys(pointOffers).filter((value) => value === type)[0]];
-  //const pointOffer = pointOffers.filter((elem) => elem.type === trip.type)[0];
-
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
