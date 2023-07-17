@@ -1,6 +1,5 @@
-import TripInfoView from './view/trip-info-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
-import {render, RenderPosition} from './framework/render.js';
+import {render} from './framework/render.js';
 import TripsModel from './model/model.js';
 import FilterModel from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
@@ -44,6 +43,5 @@ const filterPresenter = new FilterPresenter({
 filterPresenter.init();
 tripPresenter.init();
 tripsModel.init() .finally(() => {
-  render(new TripInfoView(), tripHeaderElement, RenderPosition.AFTERBEGIN);
   render(newTripButtonComponent, tripHeaderElement);
 });
