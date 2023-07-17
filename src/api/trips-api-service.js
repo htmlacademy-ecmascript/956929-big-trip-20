@@ -22,12 +22,34 @@ export default class TripsApiService extends ApiService {
       url: `${Url.TRIPS}/${trip.id}`,
       method: Method.PUT,
       body: JSON.stringify(this.#adaptToServer(trip)),
-      headers: new Headers({'Content-Type': 'application/json'}),
+      headers: new Headers({'Content-Type': 'application/json'})
     });
 
     const parsedResponse = await ApiService.parseResponse(response);
 
     return parsedResponse;
+  }
+
+  async addTrip(trip) {
+    const response = await this._load({
+      url: Url.TRIPS,
+      method: Method.POST,
+      body: JSON.stringify(this.#adaptToServer(trip)),
+      headers: new Headers({'Content-Type' : 'application/json'})
+    });
+
+    const parsedResponse = await ApiService.parseResponse(response);
+
+    return parsedResponse;
+  }
+
+  async deleteTrip(trip) {
+    const response = await this._load({
+      url: `${Url.TRIPS}/${trip.id}`,
+      method: Method.DELETE
+    });
+
+    return response;
   }
 
   #adaptToServer(trip) {

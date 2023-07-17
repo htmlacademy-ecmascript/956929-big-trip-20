@@ -61,17 +61,54 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#mode === MODE.EDITING) {
-      replace(this.#tripEditComponent, prevTripEditComponent);
-    }
-
     if (this.#mode === MODE.DEFAULT) {
       replace(this.#tripComponent, prevTripComponent);
     }
 
+    if (this.#mode === MODE.EDITING) {
+      replace(this.#tripComponent, prevTripEditComponent);
+      this.#mode = MODE.DEFAULT;
+    }
+
+
     remove(prevTripComponent);
     remove(prevTripEditComponent);
 
+  }
+
+  setSaving() {
+    if (this.#mode === MODE.EDITING) {
+      this.#tripEditComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === MODE.EDITING) {
+      this.#tripEditComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  }
+
+  setAborting() {
+    if (this.#mode === MODE.DEFAULT) {
+      this.#tripComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#tripEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#tripEditComponent.shake(resetFormState);
   }
 
   destroy() {
@@ -123,7 +160,6 @@ export default class PointPresenter {
       isMinorUpdate ? UPDATE_TYPE.MINOR : UPDATE_TYPE.PATCH,
       update,
     );
-    this.#replaceFormToTrip();
   };
 
   #handleFormClick = () => {

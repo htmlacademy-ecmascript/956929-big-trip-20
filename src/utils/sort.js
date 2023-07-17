@@ -10,7 +10,7 @@ function sortByTime (pointA, pointB) {
 }
 
 function sortByPrice (pointA, pointB) {
-  return pointA.basePrice - pointB.basePrice ;
+  return pointB.basePrice - pointA.basePrice ;
 }
 
 function sortPoints (items, sortType) {

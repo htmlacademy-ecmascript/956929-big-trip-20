@@ -12,7 +12,6 @@ export default class TripsModel extends Observable {
     super();
     this.#tripsApiService = tripsApiService;
 
-
   }
 
   async init() {
@@ -22,12 +21,13 @@ export default class TripsModel extends Observable {
       const destinations = await this.#tripsApiService.destinations;
 
       this.#points = points.map(this.#adaptTripToClient);
-      this.#offers = offers;
+      this.#offers = this.#adaptOffers(offers);
       this.#destinations = destinations.map(this.#adaptDestinationToClient);
       this.#destinationsList = this.#destinations.map(({name}) => name);
-
     } catch(err) {
       this.#points = [];
+      this._notify(UPDATE_TYPE.ERROR);
+      return;
     }
 
     this._notify(UPDATE_TYPE.INIT);
@@ -80,35 +80,47 @@ export default class TripsModel extends Observable {
     }
   }
 
-  addPoint(updateType, update) {
-    this.#points = [
-      update,
-      ...this.#points
-    ];
+  async addPoint(updateType, update) {
 
-    this._notify(updateType, update);
+    try {
+      const response = await this.#tripsApiService.addTrip(update);
+      const newPoint = this.#adaptTripToClient(response);
+      this.#points = [
+        newPoint,
+        ...this.#points,
+      ];
+      this._notify(updateType, newPoint);
+    } catch(err) {
+      throw new Error('Can\'t add trip');
+    }
+
   }
 
-  deletePoint(updateType, update) {
+  async deletePoint(updateType, update) {
     const index = this.#points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting trip');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, index),
-      ...this.#points.slice(index + 1)
-    ];
+    try {
+      await this.#tripsApiService.deleteTrip(update);
+      this.#points = [
+        ...this.#points.slice(0, index),
+        ...this.#points.slice(index + 1),
+      ];
 
-    this._notify(updateType);
+      this._notify(updateType);
+    } catch(err) {
+      throw new Error('Can\'t delete trip');
+    }
   }
 
   #adaptTripToClient(trip) {
     const adaptedTrip = {...trip,
       basePrice: trip['base_price'],
-      dateFrom: trip['date_from'],
-      dateTo: trip['date_to'],
+      dateFrom: trip['date_from'] === null ? trip['date_from'] : new Date(trip['date_from']),
+      dateTo: trip['date_to'] === null ? trip['date_to'] : new Date(trip['date_to']),
       isFavorite: trip['is_favorite']
     };
 

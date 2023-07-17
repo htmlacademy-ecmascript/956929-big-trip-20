@@ -1,5 +1,4 @@
 import {render, RenderPosition, remove} from '../framework/render.js';
-// import {nanoid} from 'nanoid';
 import PointEditView from '../view/point-edit-view.js';
 import {USER_ACTION, UPDATE_TYPE} from '../const/const.js';
 
@@ -43,6 +42,13 @@ export default class NewTripPresenter {
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#tripEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
   destroy() {
     if (this.#tripEditComponent === null) {
       return;
@@ -56,14 +62,25 @@ export default class NewTripPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setAborting() {
+    const resetFormState = () => {
+      this.#tripEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#tripEditComponent.shake(resetFormState);
+  }
+
+
   #handleFormSubmit = (trip) => {
     this.#handleDataChange(
       USER_ACTION.ADD_TRIP,
       UPDATE_TYPE.MINOR,
       trip
-      //{ ...trip, id: nanoid()},
     );
-    this.destroy();
   };
 
   #handleDeleteClick = () => {

@@ -1,14 +1,11 @@
-import TripInfoView from './view/trip-info-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
-import {render, RenderPosition} from './framework/render.js';
+import {render} from './framework/render.js';
 import TripsModel from './model/model.js';
 import FilterModel from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import NewTripButtonView from './view/new-trip-button-view.js';
 
 import TripsApiService from './api/trips-api-service.js';
-//import OfferssApiService from './api/offers-api-service.js';
-// import DestinationsApiService from './api/destinations-api-service.js';
 import {AUTHORIZATION, END_POINT} from './const/api-service.js';
 
 const tripHeaderElement = document.querySelector('.trip-main');
@@ -46,6 +43,5 @@ const filterPresenter = new FilterPresenter({
 filterPresenter.init();
 tripPresenter.init();
 tripsModel.init() .finally(() => {
-  render(new TripInfoView(), tripHeaderElement, RenderPosition.AFTERBEGIN);
   render(newTripButtonComponent, tripHeaderElement);
 });
