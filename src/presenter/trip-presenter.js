@@ -4,6 +4,7 @@ import SortView from '../view/sort-view.js';
 import TripListView from '../view/trip-list-view.js';
 import NoTripView from '../view/no-trip-view.js';
 import LoadingView from '../view/loading-view.js';
+import NewTripButtonView from '../view/new-trip-button-view.js';
 import PointPresenter from './point-presenter.js';
 import {sortPoints} from '../utils/sort.js';
 import NewTripPresenter from './new-trip-presenter.js';
@@ -19,13 +20,12 @@ const TimeLimit = {
 export default class TripPresenter {
   #container = null;
   #tripsModel = null;
-  #offers = [];
-  #destinations = [];
-  #destinationsList = [];
   #filterModel = null;
   #newTripPresenter = null;
   #tripPresenters = new Map();
   #isLoading = true;
+  #infoHeaderContainer = null;
+  #newTripButtonComponent = null;
 
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
@@ -41,16 +41,17 @@ export default class TripPresenter {
   #currentSortType = SORT_TYPE.DAY;
   #filterType = FILTER_TYPE.EVERYTHING;
 
-  constructor({tripPointEditContainer, tripsModel, filterModel, onNewTripDestroy}) {
+  constructor({tripPointEditContainer, tripsModel, filterModel, infoHeaderElement}) {
     this.#container = tripPointEditContainer;
     this.#tripsModel = tripsModel;
     this.#filterModel = filterModel;
+    this.#infoHeaderContainer = infoHeaderElement;
 
     this.#newTripPresenter = new NewTripPresenter({
 
       tripListContainer: this.#tripListComponent.element,
       onDataChange: this.#handleViewAction,
-      onDestroy: onNewTripDestroy
+      onDestroy: this.#handleNewTripFormClose
     });
 
     this.#tripsModel.addObserver(this.#handleModelEvent);
@@ -77,12 +78,27 @@ export default class TripPresenter {
   }
 
   init() {
-    this.#offers = {...this.#tripsModel.offers};
-    this.#destinations = [...this.#tripsModel.destinations];
-    this.#destinationsList = [...this.#tripsModel.destinationsList];
-
     this.#renderBoard();
   }
+
+
+  #renderNewEventButton() {
+    this.#newTripButtonComponent = new NewTripButtonView({
+      onClick: this.#handleNewTripButtonClick
+    });
+
+    render(this.#newTripButtonComponent, this.#infoHeaderContainer);
+  }
+
+  #handleNewTripFormClose = () => {
+    this.#newTripButtonComponent.element.disabled = false;
+  };
+
+  #handleNewTripButtonClick = () => {
+    this.createTrip();
+    this.#newTripButtonComponent.element.disabled = true;
+  };
+
 
   #renderBoard() {
     if (this.#isLoading) {
@@ -91,6 +107,7 @@ export default class TripPresenter {
     }
 
     if (this.trips.length === 0) {
+      this.#renderList();
       this.#renderNoTrip();
       return;
     }
@@ -147,9 +164,10 @@ export default class TripPresenter {
   }
 
   #renderTrips(trips, offers, destinations, destinationsList) {
-    for (let i = 0; i < trips.length; i++) {
-      this.#renderTrip(trips[i], offers, destinations, destinationsList);
-    }
+    trips.forEach((trip) => {
+      this.#renderTrip(trip, offers, destinations, destinationsList);
+    });
+
   }
 
   #renderTrip(trip, offers, destinations, destinationsList) {
@@ -177,7 +195,7 @@ export default class TripPresenter {
       case USER_ACTION.UPDATE_TRIP:
         this.#tripPresenters.get(update.id).setSaving();
         try {
-          await this.#tripsModel.updatePoint(updateType, update);
+          await this.#tripsModel.updateTrip(updateType, update);
         } catch(err) {
           this.#tripPresenters.get(update.id).setAborting();
         }
@@ -185,7 +203,7 @@ export default class TripPresenter {
       case USER_ACTION.ADD_TRIP:
         this.#newTripPresenter.setSaving();
         try {
-          await this.#tripsModel.addPoint(updateType, update);
+          await this.#tripsModel.addTrip(updateType, update);
         } catch(err) {
           this.#newTripPresenter.setAborting();
         }
@@ -193,7 +211,7 @@ export default class TripPresenter {
       case USER_ACTION.DELETE_TRIP:
         this.#tripPresenters.get(update.id).setDeleting();
         try {
-          await this.#tripsModel.deletePoint(updateType, update);
+          await this.#tripsModel.deleteTrip(updateType, update);
         } catch(err) {
           this.#tripPresenters.get(update.id).setAborting();
         }
@@ -218,6 +236,7 @@ export default class TripPresenter {
       case UPDATE_TYPE.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
+        this.#renderNewEventButton();
         this.#renderBoard();
         break;
       case UPDATE_TYPE.ERROR:

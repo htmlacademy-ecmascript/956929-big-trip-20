@@ -1,7 +1,7 @@
 import {render, RenderPosition, remove} from '../framework/render.js';
 import PointEditView from '../view/point-edit-view.js';
 import {USER_ACTION, UPDATE_TYPE} from '../const/const.js';
-
+import {isEscapeKey} from '../utils/trip.js';
 export default class NewTripPresenter {
   #tripListContainer = null;
   #handleDataChange = null;
@@ -50,6 +50,8 @@ export default class NewTripPresenter {
   }
 
   destroy() {
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+
     if (this.#tripEditComponent === null) {
       return;
     }
@@ -58,8 +60,6 @@ export default class NewTripPresenter {
 
     remove(this.#tripEditComponent);
     this.#tripEditComponent = null;
-
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
   setAborting() {
@@ -88,10 +88,11 @@ export default class NewTripPresenter {
   };
 
   #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      this.destroy();
+    if (!isEscapeKey(evt)) {
+      return;
     }
+    evt.preventDefault();
+    this.destroy();
   };
 
 }

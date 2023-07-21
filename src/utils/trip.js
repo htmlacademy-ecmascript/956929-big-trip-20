@@ -79,5 +79,6 @@ function isPriceEqual(priceA, priceB) {
   return (priceA - priceB) === 0;
 }
 
+const isEscapeKey = (evt) => evt.key === 'Escape';
 
-export {humanizeTripDueDate, getPointDuration, upFirstLetter, isTripFuture, isTripPresent, isTripPast, getDateDifference, getTimeDifference, isDatesEqual, isPriceEqual};
+export {humanizeTripDueDate, getPointDuration, upFirstLetter, isTripFuture, isTripPresent, isTripPast, getDateDifference, getTimeDifference, isDatesEqual, isPriceEqual, isEscapeKey};
