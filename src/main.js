@@ -1,5 +1,5 @@
 import TripPresenter from './presenter/trip-presenter.js';
-import TripsModel from './model/model.js';
+import TripsModel from './model/trips-model.js';
 import FilterModel from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 
