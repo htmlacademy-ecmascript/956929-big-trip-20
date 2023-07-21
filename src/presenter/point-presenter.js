@@ -4,7 +4,7 @@ import PointView from '../view/point-view.js';
 import PointEditView from '../view/point-edit-view.js';
 
 import {MODE, USER_ACTION, UPDATE_TYPE} from '../const/const.js';
-import {isDatesEqual, isPriceEqual} from '../utils/trip.js';
+import {isDatesEqual, isPriceEqual, isEscapeKey} from '../utils/trip.js';
 
 export default class PointPresenter {
   #tripContainer = null;
@@ -112,6 +112,7 @@ export default class PointPresenter {
   }
 
   destroy() {
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
     remove(this.#tripComponent);
     remove(this.#tripEditComponent);
   }
@@ -138,11 +139,12 @@ export default class PointPresenter {
   }
 
   #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      this.#tripEditComponent.reset(this.#trip);
-      this.#replaceFormToTrip();
+    if (!isEscapeKey(evt)) {
+      return;
     }
+    evt.preventDefault();
+    this.#tripEditComponent.reset(this.#trip);
+    this.#replaceFormToTrip();
   };
 
   #handleEditClick = () => {

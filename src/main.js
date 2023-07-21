@@ -1,9 +1,7 @@
 import TripPresenter from './presenter/trip-presenter.js';
-import {render} from './framework/render.js';
-import TripsModel from './model/model.js';
+import TripsModel from './model/trips-model.js';
 import FilterModel from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
-import NewTripButtonView from './view/new-trip-button-view.js';
 
 import TripsApiService from './api/trips-api-service.js';
 import {AUTHORIZATION, END_POINT} from './const/api-service.js';
@@ -19,19 +17,8 @@ const tripPresenter = new TripPresenter({
   tripPointEditContainer: tripEventsElement,
   tripsModel,
   filterModel,
-  onNewTripDestroy: handleNewTripFormClose
+  infoHeaderElement: tripHeaderElement
 });
-
-const newTripButtonComponent = new NewTripButtonView({
-  onClick: handleNewTripButtonClick
-});
-function handleNewTripFormClose() {
-  newTripButtonComponent.element.disabled = false;
-}
-function handleNewTripButtonClick() {
-  tripPresenter.createTrip();
-  newTripButtonComponent.element.disabled = true;
-}
 
 const filterPresenter = new FilterPresenter({
   filterContainer: tripHeaderFilterElement,
@@ -39,9 +26,6 @@ const filterPresenter = new FilterPresenter({
   tripsModel
 });
 
-
 filterPresenter.init();
 tripPresenter.init();
-tripsModel.init() .finally(() => {
-  render(newTripButtonComponent, tripHeaderElement);
-});
+tripsModel.init();

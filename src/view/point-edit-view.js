@@ -6,11 +6,12 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 
-function createEventTypeItemsTemplate(types) {
+function createEventTypeItemsTemplate(types, tripType) {
+
   return (`
     ${Object.values(types).map((type) =>
       `<div class="event__type-item">
-        <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+        <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${type === tripType ? 'checked' : ''}>
         <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1" data-type="${type}">${upFirstLetter(type)}</label>
       </div>`).join('')}
   `);
@@ -31,10 +32,8 @@ function createEventDetailsTemplate(pointOffers, trip, pointDestinations) {
      
 
       <section class="event__section  event__section--destination">
-        ${createOffersTemplate(pointOffers, trip, isDisabled)}
-
+       ${createOffersTemplate(pointOffers, trip, isDisabled)}
        ${description}
-        
       </section>
     </section>
   `);
@@ -49,9 +48,10 @@ function createEventFormDescriptionTemplate(description, trip, pointDestinations
 }
 
 function createOffersTemplate(pointOffers, trip, isDisabled) {
+  const isHidden = pointOffers[trip.type].length === 0 ? 'visually-hidden' : '' ;
 
   return (`
-    <section class="event__section  event__section--offers">
+    <section class="event__section  event__section--offers ${isHidden}">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
       <div class="event__available-offers">
@@ -98,6 +98,7 @@ function createPointEditViewTemplate(trip, pointOffers, destinationsList, pointD
   const tripDestination = pointDestinations.filter((value) => value.id === destination);
   const tripCity = tripDestination[0] !== undefined ? tripDestination[0].name : '';
 
+
   return (`
     <li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -111,7 +112,7 @@ function createPointEditViewTemplate(trip, pointOffers, destinationsList, pointD
             <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-              ${createEventTypeItemsTemplate(TYPES)}
+              ${createEventTypeItemsTemplate(TYPES, type)}
             </fieldset>
             </div>
           </div>
@@ -199,12 +200,12 @@ export default class PointEditView extends AbstractStatefulView {
 
   _restoreHandlers() {
     this.element.querySelector('.event.event--edit').addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpButtonHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpButtonClickHandler);
 
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler);
-    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
 
     this.#setDatepickers();
@@ -284,7 +285,7 @@ export default class PointEditView extends AbstractStatefulView {
     );
   }
 
-  #rollUpButtonHandler = (evt) => {
+  #rollUpButtonClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormClick();
   };
@@ -316,7 +317,7 @@ export default class PointEditView extends AbstractStatefulView {
     });
   };
 
-  #priceChangeHandler = (evt) => {
+  #priceInputHandler = (evt) => {
     evt.preventDefault();
     this._setState({
       basePrice: evt.target.valueAsNumber,
